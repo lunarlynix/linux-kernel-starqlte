@@ -443,30 +443,6 @@
 	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
 };
 
-/* PINCTRL - additions to nodes defined in sdm845.dtsi */
-
-&qup_i2c10_default {
-	pinconf {
-		pins = "gpio55", "gpio56";
-		drive-strength = <2>;
-		bias-disable;
-	};
-};
-
-&qup_uart9_default {
-	pinconf-tx {
-		pins = "gpio4";
-		drive-strength = <2>;
-		bias-disable;
-	};
-
-	pinconf-rx {
-		pins = "gpio5";
-		drive-strength = <2>;
-		bias-pull-up;
-	};
-};
-
 &tlmm {
 	gpio-reserved-ranges = <0 4>, <81 4>;
 };
