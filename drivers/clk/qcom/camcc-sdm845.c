@@ -1718,7 +1718,10 @@ static int cam_cc_sdm845_probe(struct platform_device *pdev)
 	cam_cc_pll_config.l = 0x14;
 	clk_fabia_pll_configure(&cam_cc_pll3, regmap, &cam_cc_pll_config);
 
-	return qcom_cc_really_probe(pdev, &cam_cc_sdm845_desc, regmap);
+    int ret;
+	ret = qcom_cc_really_probe(pdev, &cam_cc_sdm845_desc, regmap);
+	pr_info("qcom_cc_really_probe: %i", ret);
+	return ret;
 }
 
 static struct platform_driver cam_cc_sdm845_driver = {
@@ -1731,7 +1734,10 @@ static struct platform_driver cam_cc_sdm845_driver = {
 
 static int __init cam_cc_sdm845_init(void)
 {
-	return platform_driver_register(&cam_cc_sdm845_driver);
+    int ret;
+    ret = platform_driver_register(&cam_cc_sdm845_driver);
+    pr_info("cam_cc_sdm845_init done");
+	return ret;
 }
 subsys_initcall(cam_cc_sdm845_init);
 

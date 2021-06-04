@@ -237,7 +237,9 @@ int qcom_cc_really_probe(struct platform_device *pdev,
 	size_t num_clk_hws = desc->num_clk_hws;
 	struct clk_hw **clk_hws = desc->clk_hws;
 
+    pr_info("init variables");
 	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
+    pr_info("devm kzalloc");
 	if (!cc)
 		return -ENOMEM;
 
@@ -250,21 +252,25 @@ int qcom_cc_really_probe(struct platform_device *pdev,
 	reset->reset_map = desc->resets;
 
 	ret = devm_reset_controller_register(dev, &reset->rcdev);
+    pr_info("devm_reset_controller_register: %i", ret);
 	if (ret)
 		return ret;
 
 	if (desc->gdscs && desc->num_gdscs) {
 		scd = devm_kzalloc(dev, sizeof(*scd), GFP_KERNEL);
+        pr_info("devm_kzalloc");
 		if (!scd)
 			return -ENOMEM;
 		scd->dev = dev;
 		scd->scs = desc->gdscs;
 		scd->num = desc->num_gdscs;
 		ret = gdsc_register(scd, &reset->rcdev, regmap);
+        pr_info("gdsc_register: %i", ret);
 		if (ret)
 			return ret;
 		ret = devm_add_action_or_reset(dev, qcom_cc_gdsc_unregister,
 					       scd);
+        pr_info("devm_add_action_or_reset: %i", ret);
 		if (ret)
 			return ret;
 	}
@@ -273,9 +279,13 @@ int qcom_cc_really_probe(struct platform_device *pdev,
 	cc->num_rclks = num_clks;
 
 	qcom_cc_drop_protected(dev, cc);
+    pr_info("qcom_cc_drop_protected");
 
 	for (i = 0; i < num_clk_hws; i++) {
+        pr_info("before devm_clk_hw_register");
 		ret = devm_clk_hw_register(dev, clk_hws[i]);
+        pr_info("devm_clk_hw_register: %i", ret);
+
 		if (ret)
 			return ret;
 	}
@@ -284,12 +294,15 @@ int qcom_cc_really_probe(struct platform_device *pdev,
 		if (!rclks[i])
 			continue;
 
+        pr_info("before devm_clk_register_regmap");
 		ret = devm_clk_register_regmap(dev, rclks[i]);
+        pr_info("devm_clk_register_regmap: %i", ret);
 		if (ret)
 			return ret;
 	}
 
 	ret = devm_of_clk_add_hw_provider(dev, qcom_cc_clk_hw_get, cc);
+    pr_info("devm_of_clk_add_hw_provider: %i", ret);
 	if (ret)
 		return ret;
 

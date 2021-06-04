@@ -11,35 +11,11 @@
 	model = "Samsung S9 Mainline";
 	compatible = "qcom,sdm845-mtp", "qcom,sdm845", "qcom,mtp";
 
-	aliases {
-		display0 = &framebuffer0;
-	};
-
 	chosen {
 		#address-cells = <2>;
         #size-cells = <2>;
         ranges;
-		stdout-path = "display0";
-		bootargs = "loglevel=7";
-
-		/*
-         * hack: Use framebuffer setup by the bootloader for simplefb.
-         * the address is taken from the bootloader config (strings /dev/block/bootdevice/by-name/xbl | grep "Display Reserved")
-         */
-        framebuffer0: framebuffer@9d400000 {
-            compatible = "simple-framebuffer";
-            reg = <0 0x9d400000 0 (1440 * 2960 * 4)>;
-            width = <1440>;
-            height = <2960>;
-            stride = <(1440 * 4)>;
-            format = "a8r8g8b8";
-            status = "okay";
-
-			vdda-supply = <&vreg_l14a_1p88>;
-			vddio-supply = <&vreg_l14a_1p88>;
-			vddi-supply = <&vreg_l14a_1p88>;
-			vci-supply = <&vreg_l28a_3p0>;
-        };
+		bootargs = "initcall_debug=1  loglevel=15 clk_ignore_unused";
 	};
 
 
@@ -52,10 +28,5 @@
             ftrace-size = <0x40000>;
             pmsg-size = <0x40000>;
         };
-        fb_mem: memory@a1a10000 {
-                    compatible = "removed-dma-pool";
-                    no-map;
-                    reg = <0 0x9d400000 0 (1440 * 2960 * 4)>;
-                };
 	};
 };
